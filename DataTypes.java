@@ -4,10 +4,10 @@ class DataTypes
 		byte b = 10;		//1 byte Default - 0
 		short s = 20;		//2 byte Default - 0
 		char c = 's';		//2 bytes Default - '\s'
-		int a = 100; 		//4 bytes
-		long l = 115233;	//8 bytes
-		float f = 10.5f;		//4 bytes (without f in end, default it will be double type)
-		double d = 212.266144; //8 bytes
+		int a = 100; 		//4 bytes Default - 0
+		long l = 115233;	//8 bytes Default - 0L
+		float f = 10.5f;	//4 bytes (without f in end, default it will be double type)  Default - 0.0f
+		double d = 212.266144; //8 bytes Default - 0.0d
 		boolean z = true; //size not applicable (depends on jvm)
 		String str = "Hello World"; //Non Primitive , Object
 
