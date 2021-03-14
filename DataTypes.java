@@ -97,7 +97,7 @@ class DataTypes
 		*/
 
 		int _i = 'a';
-		System.out.println(_c);
+		System.out.println(_i);
 
 	}
 }
