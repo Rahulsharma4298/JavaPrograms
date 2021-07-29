@@ -1,0 +1,36 @@
+1. In default serialization every thing takes care by JVM and programmer doesn't
+have any control.
+
+2. In serialization total object will be saved always and it is not possible to save part
+of the object , which creates performence problems at certain point.
+
+3. To overcome these problems we should go for externalization where every thing
+takes care by programmer and JVM doesn't have any control.
+
+4. The main advantage of externalization over serialization is we can save either
+total object or part of the object based on our requirement.
+
+5. To provide Externalizable ability for any object compulsory the corresponding
+class should implements externalizable interface.
+
+6. Externalizable interface is child interface of serializable interface.
+
+7. Externalizable interface defines 2 methods :
+
+i) public void writeExternal(ObjectOutput out) throws IOException
+
+This method will be executed automatically at the time of Serialization with in this
+method , we have to write code to save required variables to the file .
+
+ii) public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+
+This method will be executed automatically at the time of deserialization with in this
+method , we have to write code to save read required variable from file and assign to the
+current object 
+
+8) At the time of deserialization Jvm will create a seperate new object by executing public
+no-arg constructor on that object JVM will call readExternal() method.
+Every Externalizable class should compusory contains public no-arg constructor
+otherwise we will get RuntimeExcepion saying "InvalidClassException" 
+
+9) transient keyword will make no impact in case of Externalization.

@@ -1,0 +1,158 @@
+1. Serialization in Java is a mechanism of writing the state of an object into a byte-stream. 
+It is mainly used in Hibernate, RMI, JPA, EJB and JMS technologies.
+
+2. It is the process of converting an object from java supported
+form to either network supported form (or) file supported form.
+
+3. For serializing the object, we call the writeObject() method ObjectOutputStream, and for deserialization we call the readObject() method of ObjectInputStream class.
+
+4. The reverse operation of serialization is called deserialization where byte-stream is converted into an object.
+it is the process of converting an object from file supported
+form (or) network supported form to java supported form.
+
+5. The serialization and deserialization process is platform-independent, 
+it means you can serialize an object in a platform and deserialize in different platform.
+
+6, The class must implement Serializable interface, otherwise we will get runtime exception:
+"NotSerializableException"
+Serializable is a marker interface(has no data members & methods), required ability is provided by JVM.
+
+7. ObjectOutputStream :
+Constructor
+1) public ObjectOutputStream(OutputStream out) throws IOException {}
+
+Methods
+1) public final void writeObject(Object obj) throws IOException {}
+2) public void flush() throws IOException {}
+3) public void close() throws IOException {}
+
+8. ObjectInputStreamClass:
+
+Constructor
+1) public ObjectInputStream(InputStream in) throws IOException {}
+
+Methods
+1) public final Object readObject() throws IOException, ClassNotFoundException{}
+2) public void close() throws IOException {}
+
+9. transient keyword/modifier: At the time of serialization if we don't want to serialize the value of a particular
+variable to meet the security constraints then we should declare that variable with transient modifier.	
+At the time of serialization JVM ignores the original value of transient variable
+and save default value to the file .
+	transient modifier can be used only with variable.
+
+10 . Static variable is not part of object state hence they won't participate in
+serialization because of this declaring a static variable as transient there is no use.
+
+11. final variables will be participated into serialization directly by their values.
+Hence declaring a final variable as transient there is no use.
+
+ 12. We can serialize any no of objects to the file but in which order we serialized in the
+same order only we have to deserialize, if we dont know the order then we can use instance of operator to check and typecast it.
+
+
+Object Graph in Serialization/Serialization with Aggregation(HAS A Relationship):
+
+1. Whenever we are serializing an object the set of all objects which are reachable
+from that object will be serialized automatically. This group of objects is nothing
+but object graph in serialization.
+
+2. In object graph every object should be Serializable.
+
+Custom Serialization:
+
+1. To recover the loss of information which happened because of transient keyword, we should use
+custom serialization. 
+for example password if declared with transient then it will be lost and its value will be default after serialization.
+
+2. We can implements customized serialization by using the following two methods:
+
+i) private void writeObject(ObjectOutputStream os) throws Exception
+
+It is a callback method which will be executed automatically by JVM at the time of serialization. 
+Hence at the time of serialization if we want to perform
+any extra work we have to define that in this method only.
+(prepare encrypted password and write encrypted password seperate to the file )
+
+ii) private void readObject(ObjectInputStream is) throws Exception
+
+This method will be executed automatically by JVM at the time of
+Deserialization. Hence at the time of Deserialization if we want to perform any
+extra activity we have to define that in this method only.
+(read encrypted password , perform decryption and assign decrypted password
+to the current object password variable ) 
+
+These methods are private but it is still called by JVM using 
+These are overloaded methods of ObjectOutputStream & ObjectInputStream.
+These methods must be present in the class implementing Serializable for custom serialization.
+
+
+Serialization with inheritance(IS A Relationship):
+
+1) If parent class implements Serializable then automatically every child class by default
+implements Serializable. That is Serializable nature is inheriting from parent to child.
+
+2) If child class is serializable, parent class need not to be Serializable.
+
+3) At the time of serialization, JVM will check if any instance variable inheriting from
+non Serializable parent then JVM will ignore original value and save default value to the file.
+
+4) At the time of Deserialization JVM checks whether any parent class is non
+Serializable or not. If any parent class is nonSerializable JVM creates a separate
+object for every non Serializable parent and shares its instance variables to the
+current object. 
+
+5) To create an object for non-serializable parent JVM always calls no arg
+constructor(default constructor) of that non Serializable parent hence every non
+Serializable parent should compulsory contain no arg constructor otherwise we
+will get runtime exception "InvalidClassException" .
+
+6) If non-serializable parent is abstract class then just instance control flow will be
+performed and share it's instance variable to the current object.
+
+7) Instance control flow:
+i)identification of instance members
+ii) assignement of instance members
+iii) execution of constructors
+
+8) Object class doesn't implement Serializable interface.
+
+
+serialVersionUid:
+At the time of Serialization JVM will save a unique id with every object.
+This unique id will be generated by JVM based on .class file. Receiver side JVM
+will compare object unique id with local .class unique id. If both are matched then only
+deserialization will be performed otherwise receiver unable to deserialize and will
+get Runtime Exception saying InvalidClassException.
+This unique id is serialVersionUID and its is by default taken care by JVM.
+
+The problems in depending on default serialVersionUIDare :
+
+1. After Serializing object if we change the .class file then we can't perform
+deserialization because of mismatch in serialVersionUID of local class and
+serialized object in this case at the time of Deserialization we will get
+RuntimeException saying in "InvalidClassException".
+
+2. Both sender and receiver should use the same version of JVM if there any
+incompatability in JVM versions then receive anable to deserializable because of
+different serialVersionUID , in this case receiver will get RuntimeException
+saying "InvalidClassException" .
+
+3. To generate serialVersionUID internally JVM will use complexAlgorithm which
+may create performence problems.
+
+4. We can solve above problems by configuring our own serialVersionUID . 
+we can configure serialVersionUID as follows :
+	private static final long serialVersionUID = 1L; // public or protected is also allowed
+
+Not recommended to use JVM generated default serialVersionUID
+
+5. Why so we use SerialVersionUID : SerialVersionUID is used to ensure that during deserialization the same class 
+(that was used during serialize process) is loaded.
+It is used during deserialization to verify that the sender ( the person who serializes) and receiver ( the person who deserializes) of 
+a serialized object have loaded classes for that object that are compatible with respect to serialization.
+
+6. Modern IDE issues warning when we dont define our own serialVersionUID, some IDE even generates the serialVersionUID, 
+because it is strongly recommended to define our own serialVersionUID in every Serializable class.
+
+
